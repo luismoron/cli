@@ -20,76 +20,56 @@ The main control script for the Caelestia dotfiles.
 
 ## Installation
 
-### Arch linux
+### Prerequisites: Install Hyprland
 
-The CLI is available from the AUR as `caelestia-cli`. You can install it with an AUR helper
-like [`yay`](https://github.com/Jguer/yay) or manually downloading the PKGBUILD and running `makepkg -si`.
-
-A package following the latest commit also exists as `caelestia-cli-git`. This is bleeding edge
-and likely to be unstable/have bugs. Regular users are recommended to use the stable package
-(`caelestia-cli`).
-
-### Nix
-
-You can run the CLI directly via `nix run`:
+This dotfiles setup is designed for Hyprland. To install Hyprland on Fedora, enable the COPR repository:
 
 ```sh
-nix run github:caelestia-dots/cli
+sudo dnf copr enable solopasha/hyprland
+sudo dnf install hyprland
 ```
 
-Or add it to your system configuration:
+You may also need additional packages like `hyprpaper`, `hyprlock`, etc., depending on your setup.
 
-```nix
-{
-  inputs = {
-    nixpkgs.url = "github:nixos/nixpkgs/nixos-unstable";
+### Fedora
 
-    caelestia-cli = {
-      url = "github:caelestia-dots/cli";
-      inputs.nixpkgs.follows = "nixpkgs";
-    };
-  };
-}
-```
-
-The package is available as `caelestia-cli.packages.<system>.default`, which can be added to your
-`environment.systemPackages`, `users.users.<username>.packages`, `home.packages` if using home-manager,
-or a devshell. The CLI can then be used via the `caelestia` command.
-
-> [!TIP]
-> The default package does not have the shell enabled by default, which is required for full functionality.
-> To enable the shell, use the `with-shell` package. This is the recommended installation method, as
-> the CLI exposes the shell via the `shell` subcommand, meaning there is no need for the shell package
-> to be exposed.
-
-For home-manager, you can also use the Caelestia's home manager module (explained in
-[configuring](https://github.com/caelestia-dots/shell?tab=readme-ov-file#home-manager-module)) that
-installs and configures the shell and the CLI.
-
-### Manual installation
-
-Install all [dependencies](#dependencies), then install
-[`python-build`](https://github.com/pypa/build),
-[`python-installer`](https://github.com/pypa/installer),
-[`python-hatch`](https://github.com/pypa/hatch) and
-[`python-hatch-vcs`](https://github.com/ofek/hatch-vcs).
-
-e.g. via an AUR helper (yay)
+The CLI can be installed manually. First, install the dependencies:
 
 ```sh
-yay -S libnotify swappy grim dart-sass app2unit wl-clipboard slurp gpu-screen-recorder glib2 cliphist fuzzel python-build python-installer python-hatch python-hatch-vcs
+sudo dnf install libnotify swappy grim sassc wl-clipboard slurp glib2 cliphist fuzzel python3-build python3-installer python3-hatch python3-hatch-vcs
 ```
 
-Now, clone the repo, `cd` into it, build the wheel via `python -m build --wheel`
-and install it via `python -m installer dist/*.whl`. Then, to install the `fish`
+For `gpu-screen-recorder`, you may need to enable RPM Fusion repositories:
+
+```sh
+sudo dnf install https://download1.rpmfusion.org/free/fedora/rpmfusion-free-release-$(rpm -E %fedora).noarch.rpm
+sudo dnf install https://download1.rpmfusion.org/nonfree/fedora/rpmfusion-nonfree-release-$(rpm -E %fedora).noarch.rpm
+sudo dnf install gpu-screen-recorder
+```
+
+For `app2unit`, it may not be available in Fedora repositories; check for alternatives or install from source.
+
+### Automated installation
+
+For a fully automated installation, run the provided `install.sh` script:
+
+```sh
+chmod +x install.sh
+./install.sh
+```
+
+This script will enable the necessary repositories, install Hyprland and all dependencies, clone/build/install the CLI, and set up completions.
+
+Then, clone the repo, `cd` into it, build the wheel via `python3 -m build --wheel`
+and install it via `python3 -m installer dist/*.whl`. Then, to install the `fish`
 completions, copy the `completions/caelestia.fish` file to
 `/usr/share/fish/vendor_completions.d/caelestia.fish`.
 
 ```sh
 git clone https://github.com/caelestia-dots/cli.git
 cd cli
-python -m build --wheel
-sudo python -m installer dist/*.whl
+python3 -m build --wheel
+sudo python3 -m installer dist/*.whl
 sudo cp completions/caelestia.fish /usr/share/fish/vendor_completions.d/caelestia.fish
 ```
 

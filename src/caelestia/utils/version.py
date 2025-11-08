@@ -5,19 +5,10 @@ from caelestia.utils.paths import config_dir
 
 
 def print_version() -> None:
-    if shutil.which("pacman"):
-        print("Packages:")
-        pkgs = ["caelestia-shell", "caelestia-cli", "caelestia-meta"]
-        versions = subprocess.run(
-            ["pacman", "-Q", *pkgs], stdout=subprocess.PIPE, stderr=subprocess.DEVNULL, text=True
-        ).stdout
-
-        for pkg in pkgs:
-            if pkg not in versions:
-                print(f"    {pkg} not installed")
-        print("\n".join(f"    {pkg}" for pkg in versions.splitlines()))
+    if shutil.which("dnf"):
+        print("Packages: not available via dnf (install manually)")
     else:
-        print("Packages: not on Arch")
+        print("Packages: not on Fedora")
 
     print()
     try:
